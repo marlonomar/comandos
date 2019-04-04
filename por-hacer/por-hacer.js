@@ -1,7 +1,14 @@
+/**
+ * funciones del programa app
+ */
+
+ //requires==============================
 const fs = require('fs')
 
-let listadoPorHacer = [];
+//
+let listadoPorHacer = [];//listado
 
+// guardar json===========================
 let guardar = ()=>{
 
     let data = JSON.stringify(listadoPorHacer)
@@ -12,8 +19,24 @@ let guardar = ()=>{
         }
     })
 }
+//guardar base de datos====================
+const cargarDB = ()=>{
 
+    try{
+        listadoPorHacer = require('../DataBase/dataBase.json');
+    }
+    catch{
+        listadoPorHacer = [];
+    }
+    
+}
+
+
+//crear base de datos ======================
 let crear = (descricion)=>{
+
+    cargarDB()
+
     let porHacer ={
         descricion,
         completado:false
@@ -25,7 +48,31 @@ let crear = (descricion)=>{
 
 }
 
+//tener listado ============================
+let getListado =()=>{
+    cargarDB();
+    return listadoPorHacer;
+}
+
+//actualizar================================
+let actualizar =(descricion, completado)=>{
+    cargarDB()
+    let index = listadoPorHacer.findIndex(tarea=>{
+        return tarea.descricion === descricion;
+    })
+    console.log(index)
+    if(index >= 0){
+        listadoPorHacer[index].completado = completado;
+        guardar()
+        return true;
+    }else{
+        return false;
+    }
+}
+//exportar funciones========================
 module.exports={
-    crear
+    crear,
+    getListado,
+    actualizar
     
 }
